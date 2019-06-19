@@ -1,5 +1,6 @@
 import numpy
 import random
+from math import cos, pi, sqrt
 
 # Gradient vectors
 vector_table = (
@@ -13,7 +14,16 @@ def fade(x):
     # Fade function
     return 6*x**5 - 15*x**4 + 10*x**3
 
+def linear(y0, y1, t):
+    # Linear interpolation.
+    return y0 + t * (y1 - y0)
+
+def cos_int(y0, y1, t):
+    # Cosine interpolation
+    return linear(y0, y1, (-cos(pi * t)) / 2 + 0.5)
+
 def perlin_noise(sec_x, sec_y, sec_width = 5, sec_length = 5):
+    counter = 1
     # Args:
     #   sec_x (int): number of sections wide.
     #   sec_y (int): number of sections long.
@@ -52,11 +62,13 @@ def perlin_noise(sec_x, sec_y, sec_width = 5, sec_length = 5):
                     # Get dot products.
                     dots = [numpy.dot(gradient_vectors[i], distance_vectors[i]) for i in range(4)]
 
-                    # Linear interpolation.
-                    AB = dots[0] + frac_x * (dots[1] - dots[0])
-                    CD = dots[3] + frac_x * (dots[2] - dots[3])
-                    value = AB + frac_y * (CD - AB)
-                    out[i * sec_length + y - 1].append(fade(value))
+                    # Interpolation.
+                    AB = cos_int(dots[0], dots[1], frac_x)
+                    CD = cos_int(dots[3], dots[2], frac_x)
+                    value = cos_int(AB, CD, frac_y)
+                    out[i * sec_length + y - 1].append(value)
+            print(counter)
+            counter += 1
     return out
 
 if __name__ == "__main__":
