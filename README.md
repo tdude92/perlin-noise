@@ -1,2 +1,2 @@
 # perlin-noise
-Perlin noise function in python
+An implementation of the Perlin noise algorithm in Python.
