@@ -17,6 +17,9 @@ vector_table = (
 def fade(x):
     return 6*x**5 - 15*x**4 + 10*x**3
 
+def n_gradient_vectors(x_width, y_length):
+    return (x_width + 1) ** 2 - (x_width - y_length) * (x_width + 1)
+
 def perlin_noise(sec_x, sec_y):
     # Args:
     #   sec_x (int): number of sections wide.
@@ -24,16 +27,17 @@ def perlin_noise(sec_x, sec_y):
     # Returns: 2d array of values.
 
     out = [[] for _ in range(sec_y * section_length)]
+    all_gradient_vectors = [[random.choice(vector_table) for i in range(sec_x + 1)] for j in range(sec_y + 1)]
 
     for i in range(sec_y):
         for j in range(sec_x):
             # Define vectors.
             # Vector order: top left, top right, bottom right, bottom left.
             gradient_vectors = [
-                random.choice(vector_table),
-                random.choice(vector_table),
-                random.choice(vector_table),
-                random.choice(vector_table)
+                all_gradient_vectors[i][j],
+                all_gradient_vectors[i][j + 1],
+                all_gradient_vectors[i + 1][j + 1],
+                all_gradient_vectors[i + 1][j]
             ]
             for y in range(section_length):
                 y += 1
