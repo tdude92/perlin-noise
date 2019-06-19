@@ -1,11 +1,6 @@
 import numpy
 import random
 
-grid_width = 20
-grid_height = 20
-section_width = 5
-section_length = 5
-
 # Gradient vectors
 vector_table = (
     numpy.array([1, 1]),
@@ -15,18 +10,19 @@ vector_table = (
 )
 
 def fade(x):
+    # Fade function
     return 6*x**5 - 15*x**4 + 10*x**3
 
-def n_gradient_vectors(x_width, y_length):
-    return (x_width + 1) ** 2 - (x_width - y_length) * (x_width + 1)
-
-def perlin_noise(sec_x, sec_y):
+def perlin_noise(sec_x, sec_y, sec_width = 5, sec_length = 5):
     # Args:
     #   sec_x (int): number of sections wide.
     #   sec_y (int): number of sections long.
+    #   sec_width (int): how many pixels wide a section is.
+    #   sec_length (int): how many pixels long a section is.
+
     # Returns: 2d array of values.
 
-    out = [[] for _ in range(sec_y * section_length)]
+    out = [[] for _ in range(sec_y * sec_length)]
     all_gradient_vectors = [[random.choice(vector_table) for i in range(sec_x + 1)] for j in range(sec_y + 1)]
 
     for i in range(sec_y):
@@ -39,12 +35,12 @@ def perlin_noise(sec_x, sec_y):
                 all_gradient_vectors[i + 1][j + 1],
                 all_gradient_vectors[i + 1][j]
             ]
-            for y in range(section_length):
+            for y in range(sec_length):
                 y += 1
-                for x in range(section_width):
+                for x in range(sec_width):
                     x += 1
-                    frac_x = (x - 1) / (section_width - 1)
-                    frac_y = (y - 1) / (section_width - 1)
+                    frac_x = (x - 1) / (sec_width - 1)
+                    frac_y = (y - 1) / (sec_width - 1)
 
                     distance_vectors = [
                         numpy.array([frac_x, frac_y]),
@@ -60,7 +56,7 @@ def perlin_noise(sec_x, sec_y):
                     AB = dots[0] + frac_x * (dots[1] - dots[0])
                     CD = dots[3] + frac_x * (dots[2] - dots[3])
                     value = AB + frac_y * (CD - AB)
-                    out[i * section_length + y - 1].append(value)
+                    out[i * sec_length + y - 1].append(fade(value))
     return out
 
 if __name__ == "__main__":
