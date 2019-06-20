@@ -62,10 +62,13 @@ def perlin_noise(sec_x, sec_y, sec_width = 5, sec_length = 5):
                     # Get dot products.
                     dots = [numpy.dot(gradient_vectors[i], distance_vectors[i]) for i in range(4)]
 
+                    frac_x = fade(frac_x)
+                    frac_y = fade(frac_y)
+
                     # Interpolation.
-                    AB = cos_int(dots[0], dots[1], frac_x)
-                    CD = cos_int(dots[3], dots[2], frac_x)
-                    value = cos_int(AB, CD, frac_y)
+                    AB = linear(dots[0], dots[1], frac_x)
+                    CD = linear(dots[3], dots[2], frac_x)
+                    value = linear(AB, CD, frac_y)
                     out[i * sec_length + y - 1].append(value)
             print(counter)
             counter += 1
